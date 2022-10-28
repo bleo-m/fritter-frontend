@@ -16,17 +16,13 @@ const router = express.Router();
  *
  * @return - currently logged in user, or null if not logged in
  */
-router.get(
-  '/session',
-  [],
-  async (req: Request, res: Response) => {
-    const user = await UserCollection.findOneByUserId(req.session.userId);
-    res.status(200).json({
-      message: 'Your session info was found successfully.',
-      user: user ? util.constructUserResponse(user) : null
-    });
-  }
-);
+router.get('/session', [], async (req: Request, res: Response) => {
+  const user = await UserCollection.findOneByUserId(req.session.userId);
+  res.status(200).json({
+    message: 'Your session info was found successfully.',
+    user: user ? util.constructUserResponse(user) : null
+  });
+});
 
 /**
  * Sign in user.
@@ -52,7 +48,8 @@ router.post(
   ],
   async (req: Request, res: Response) => {
     const user = await UserCollection.findOneByUsernameAndPassword(
-      req.body.username, req.body.password
+      req.body.username,
+      req.body.password
     );
     req.session.userId = user._id.toString();
     res.status(201).json({
@@ -73,9 +70,7 @@ router.post(
  */
 router.delete(
   '/session',
-  [
-    userValidator.isUserLoggedIn
-  ],
+  [userValidator.isUserLoggedIn],
   (req: Request, res: Response) => {
     req.session.userId = undefined;
     res.status(200).json({
@@ -106,7 +101,10 @@ router.post(
     userValidator.isValidPassword
   ],
   async (req: Request, res: Response) => {
-    const user = await UserCollection.addOne(req.body.username, req.body.password);
+    const user = await UserCollection.addOne(
+      req.body.username,
+      req.body.password
+    );
     req.session.userId = user._id.toString();
     res.status(201).json({
       message: `Your account was created successfully. You have been logged in as ${user.username}`,
@@ -155,9 +153,7 @@ router.patch(
  */
 router.delete(
   '/',
-  [
-    userValidator.isUserLoggedIn
-  ],
+  [userValidator.isUserLoggedIn],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
     await UserCollection.deleteOne(userId);
@@ -165,6 +161,56 @@ router.delete(
     req.session.userId = undefined;
     res.status(200).json({
       message: 'Your account has been deleted successfully.'
+    });
+  }
+);
+
+/**
+ * Add to a user's followers.
+ *
+ * @name POST /api/users/:user/followers
+ *
+ * @param {string} user - user that is getting more followers
+ * @return {string} - A success message
+ * @throws {403} - If the user is not logged in
+ * @throws {404} - If user to add is emmpty or not a valid user
+ *
+ */
+router.post(
+  '/:user/followers',
+  [userValidator.isUserLoggedIn, userValidator.isValidUsername],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    const followeeName = req.params.user ?? ''; // Will not be an empty string since its validated in isValidUsername
+    const user = await UserCollection.addFollower(userId, followeeName);
+    res.status(200).json({
+      message: 'Followers were updated successfully.',
+      user: util.constructUserResponse(user)
+    });
+  }
+);
+
+/**
+ * Remove from a user's followers.
+ *
+ * @name DELETE /api/users/followers
+ *
+ * @param {string} user - user that is getting a follower removed
+ * @return {string} - A success message
+ * @throws {403} - If the user is not logged in
+ * @throws {404} - If user to add is emmpty or not a valid user
+ *
+ */
+router.post(
+  '/followers',
+  [userValidator.isUserLoggedIn, userValidator.isValidUsername],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    const followeeId = (req.body.user as string) ?? ''; // Will not be an empty string since its validated in isValidUsername
+    const user = await UserCollection.removeFollower(userId, followeeId);
+    res.status(200).json({
+      message: 'Followers were updated successfully.',
+      user: util.constructUserResponse(user)
     });
   }
 );
