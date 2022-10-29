@@ -14,9 +14,7 @@
       </header>
       <article>
         <h3>
-          <router-link to="/login">
-            Sign in
-          </router-link>
+          <router-link to="/login"> Sign in </router-link>
           to create, edit, and delete freets.
         </h3>
       </article>
@@ -30,6 +28,7 @@
               by @{{ $store.state.filter }}
             </span>
           </h2>
+          <FollowingFreetsButton :following="false" />
         </div>
         <div class="right">
           <GetFreetsForm
@@ -40,18 +39,14 @@
           />
         </div>
       </header>
-      <section
-        v-if="$store.state.freets.length"
-      >
+      <section v-if="$store.state.freets.length">
         <FreetComponent
           v-for="freet in $store.state.freets"
           :key="freet.id"
           :freet="freet"
         />
       </section>
-      <article
-        v-else
-      >
+      <article v-else>
         <h3>No freets found.</h3>
       </article>
     </section>
@@ -62,10 +57,16 @@
 import FreetComponent from '@/components/Freet/FreetComponent.vue';
 import CreateFreetForm from '@/components/Freet/CreateFreetForm.vue';
 import GetFreetsForm from '@/components/Freet/GetFreetsForm.vue';
+import FollowingFreetsButton from '@/components/Freet/FollowingFreetsButton.vue';
 
 export default {
   name: 'FreetPage',
-  components: {FreetComponent, GetFreetsForm, CreateFreetForm},
+  components: {
+    FreetComponent,
+    GetFreetsForm,
+    CreateFreetForm,
+    FollowingFreetsButton
+  },
   mounted() {
     this.$refs.getFreetsForm.submit();
   }
@@ -78,14 +79,15 @@ section {
   flex-direction: column;
 }
 
-header, header > * {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+header,
+header > * {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 button {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 section .scrollbox {
