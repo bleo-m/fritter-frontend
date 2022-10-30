@@ -1,16 +1,13 @@
+<!-- eslint-disable vue/max-attributes-per-line -->
+<!-- eslint-disable vue/html-self-closing -->
 <!-- Reusable component representing a form in a block style -->
 <!-- This is just an example; feel free to define any reusable components you want! -->
 
 <template>
   <form @submit.prevent="submit">
     <h3>{{ title }}</h3>
-    <article
-      v-if="fields.length"
-    >
-      <div
-        v-for="field in fields"
-        :key="field.id"
-      >
+    <article v-if="fields.length">
+      <div v-for="field in fields" :key="field.id">
         <label :for="field.id">{{ field.label }}:</label>
         <textarea
           v-if="field.id === 'content'"
@@ -24,15 +21,13 @@
           :name="field.id"
           :value="field.value"
           @input="field.value = $event.target.value"
-        >
+        />
       </div>
     </article>
     <article v-else>
       <p>{{ content }}</p>
     </article>
-    <button
-      type="submit"
-    >
+    <button type="submit">
       {{ title }}
     </button>
     <section class="alerts">
@@ -48,7 +43,6 @@
 </template>
 
 <script>
-
 export default {
   name: 'BlockForm',
   data() {
@@ -68,21 +62,23 @@ export default {
   methods: {
     async submit() {
       /**
-        * Submits a form with the specified options from data().
-        */
+       * Submits a form with the specified options from data().
+       */
       const options = {
         method: this.method,
         headers: {'Content-Type': 'application/json'},
         credentials: 'same-origin' // Sends express-session credentials with request
       };
       if (this.hasBody) {
-        options.body = JSON.stringify(Object.fromEntries(
-          this.fields.map(field => {
-            const {id, value} = field;
-            field.value = '';
-            return [id, value];
-          })
-        ));
+        options.body = JSON.stringify(
+          Object.fromEntries(
+            this.fields.map((field) => {
+              const {id, value} = field;
+              field.value = '';
+              return [id, value];
+            })
+          )
+        );
       }
 
       try {
@@ -96,7 +92,14 @@ export default {
         if (this.setUsername) {
           const text = await r.text();
           const res = text ? JSON.parse(text) : {user: null};
-          this.$store.commit('setUsername', res.user ? res.user.username : null);
+          this.$store.commit(
+            'setUsername',
+            res.user ? res.user.username : null
+          );
+          this.$store.commit('setFollowers', {
+            followers: res.user ? res.user.following ?? [] : [],
+            following: res.user ? res.user.followers ?? [] : []
+          });
         }
 
         if (this.refreshFreets) {
@@ -145,7 +148,7 @@ form h3 {
 }
 
 textarea {
-   font-family: inherit;
-   font-size: inherit;
+  font-family: inherit;
+  font-size: inherit;
 }
 </style>
