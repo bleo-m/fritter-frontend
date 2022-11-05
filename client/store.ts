@@ -10,6 +10,7 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     filter: null, // Username to filter shown freets by (null = show all)
+    followOnly: false, // If only freets from the user's following list show up on the timeline
     freets: [], // All freets created in the app
     username: null, // Username of the logged in user
     followers: [], // Users that follow the logged in user
@@ -47,6 +48,14 @@ const store = new Vuex.Store({
        * @param filter - Username of the user to fitler freets by
        */
       state.filter = filter;
+    },
+    updateFollowOnly(state, followOnly) {
+      /**
+       * Update the status of follow only mode
+       * @param followOnly - if followOnly is on/off
+       */
+      console.log('followOnly: ' + followOnly);
+      state.followOnly = followOnly;
     },
     updateFreets(state, freets) {
       /**

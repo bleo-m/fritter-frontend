@@ -28,15 +28,17 @@
               by @{{ $store.state.filter }}
             </span>
           </h2>
-          <FollowingFreetsButton :following="false" />
-        </div>
-        <div class="right">
-          <GetFreetsForm
+          <div class="right">
+            <!-- <GetFreetsForm
             ref="getFreetsForm"
             value="author"
             placeholder="🔍 Filter by author (optional)"
             button="🔄 Get freets"
-          />
+          /> -->
+            <div v-if="$store.state.username">
+              <FollowingFreetsButton ref="followingFreetsButton" />
+            </div>
+          </div>
         </div>
       </header>
       <section v-if="$store.state.freets.length">
@@ -63,13 +65,12 @@ export default {
   name: 'FreetPage',
   components: {
     FreetComponent,
+    // eslint-disable-next-line vue/no-unused-components
     GetFreetsForm,
     CreateFreetForm,
     FollowingFreetsButton
   },
-  mounted() {
-    this.$refs.getFreetsForm.submit();
-  }
+  mounted() {}
 };
 </script>
 
