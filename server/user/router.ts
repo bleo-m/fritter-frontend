@@ -201,12 +201,12 @@ router.post(
  * @throws {404} - If user to add is emmpty or not a valid user
  *
  */
-router.post(
-  '/followers',
+router.delete(
+  '/:user/followers',
   [userValidator.isUserLoggedIn, userValidator.isValidUsername],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-    const followeeId = (req.body.user as string) ?? ''; // Will not be an empty string since its validated in isValidUsername
+    const followeeId = req.params.user ?? ''; // Will not be an empty string since its validated in isValidUsername
     const user = await UserCollection.removeFollower(userId, followeeId);
     res.status(200).json({
       message: 'Followers were updated successfully.',

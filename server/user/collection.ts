@@ -136,13 +136,18 @@ class UserCollection {
 
     if (!user.following.includes(followeeName)) {
       // Add the followee's username to the user's following list
-      user.following = [...user.following, followeeName];
+      user.following = user.following
+        ? [...user.following, followeeName]
+        : [followeeName];
 
       // Add the user's username to the followee's followers list
-      followee.followers = [...followee.followers, user.username];
+      followee.followers = followee.followers
+        ? [...followee.followers, user.username]
+        : [user.username];
     }
 
     await user.save();
+    await followee.save();
     return user;
   }
 
@@ -171,6 +176,7 @@ class UserCollection {
     }
 
     await user.save();
+    await followee.save();
     return user;
   }
 }

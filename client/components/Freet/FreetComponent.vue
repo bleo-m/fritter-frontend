@@ -1,39 +1,20 @@
+<!-- eslint-disable vue/singleline-html-element-content-newline -->
+<!-- eslint-disable vue/max-attributes-per-line -->
 <!-- Reusable component representing a single freet and its actions -->
 <!-- We've tagged some elements with classes; consider writing CSS using those classes to style them... -->
 
 <template>
-  <article
-    class="freet"
-  >
+  <article class="freet">
     <header>
-      <h3 class="author">
-        @{{ freet.author }}
-      </h3>
-      <div
-        v-if="$store.state.username === freet.author"
-        class="actions"
-      >
-        <button
-          v-if="editing"
-          @click="submitEdit"
-        >
-          ✅ Save changes
-        </button>
-        <button
-          v-if="editing"
-          @click="stopEditing"
-        >
-          🚫 Discard changes
-        </button>
-        <button
-          v-if="!editing"
-          @click="startEditing"
-        >
-          ✏️ Edit
-        </button>
-        <button @click="deleteFreet">
-          🗑️ Delete
-        </button>
+      <h3 class="author">@{{ freet.author }}</h3>
+      <div v-if="$store.state.username === freet.author" class="actions">
+        <button v-if="editing" @click="submitEdit">✅ Save changes</button>
+        <button v-if="editing" @click="stopEditing">🚫 Discard changes</button>
+        <button v-if="!editing" @click="startEditing">✏️ Edit</button>
+        <button @click="deleteFreet">🗑️ Delete</button>
+      </div>
+      <div v-else>
+        <FollowUserButton :author="freet.author" />
       </div>
     </header>
     <textarea
@@ -42,10 +23,7 @@
       :value="draft"
       @input="draft = $event.target.value"
     />
-    <p
-      v-else
-      class="content"
-    >
+    <p v-else class="content">
       {{ freet.content }}
     </p>
     <p class="info">
@@ -65,8 +43,12 @@
 </template>
 
 <script>
+import FollowUserButton from '@/components/User/FollowUserButton.vue';
 export default {
   name: 'FreetComponent',
+  components: {
+    FollowUserButton
+  },
   props: {
     // Data from the stored freet
     freet: {
@@ -104,7 +86,8 @@ export default {
         method: 'DELETE',
         callback: () => {
           this.$store.commit('alert', {
-            message: 'Successfully deleted freet!', status: 'success'
+            message: 'Successfully deleted freet!',
+            status: 'success'
           });
         }
       };
@@ -115,7 +98,8 @@ export default {
        * Updates freet to have the submitted draft content.
        */
       if (this.freet.content === this.draft) {
-        const error = 'Error: Edited freet content should be different than current freet content.';
+        const error =
+          'Error: Edited freet content should be different than current freet content.';
         this.$set(this.alerts, error, 'error'); // Set an alert to be the error text, timeout of 3000 ms
         setTimeout(() => this.$delete(this.alerts, error), 3000);
         return;
@@ -140,7 +124,8 @@ export default {
        * @param params.callback - Function to run if the the request succeeds
        */
       const options = {
-        method: params.method, headers: {'Content-Type': 'application/json'}
+        method: params.method,
+        headers: {'Content-Type': 'application/json'}
       };
       if (params.body) {
         options.body = params.body;
@@ -168,8 +153,8 @@ export default {
 
 <style scoped>
 .freet {
-    border: 1px solid #111;
-    padding: 20px;
-    position: relative;
+  border: 1px solid #111;
+  padding: 20px;
+  position: relative;
 }
 </style>

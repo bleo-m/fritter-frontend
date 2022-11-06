@@ -34,12 +34,19 @@ const store = new Vuex.Store({
        */
       state.username = username;
     },
-    setFollowers(state, {followers, following}) {
+    setFollowersAndFollowing(state, {followers, following}) {
       /**
        * Update the stored user to the specified one.
        * @param user - new user to set
        */
       state.followers = followers;
+      state.following = following;
+    },
+    updateFollowing(state, following) {
+      /**
+       * Update the stored user to the specified one.
+       * @param user - new user to set
+       */
       state.following = following;
     },
     updateFilter(state, filter) {
@@ -54,7 +61,6 @@ const store = new Vuex.Store({
        * Update the status of follow only mode
        * @param followOnly - if followOnly is on/off
        */
-      console.log('followOnly: ' + followOnly);
       state.followOnly = followOnly;
     },
     updateFreets(state, freets) {

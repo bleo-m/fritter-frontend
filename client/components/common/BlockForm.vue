@@ -96,9 +96,9 @@ export default {
             'setUsername',
             res.user ? res.user.username : null
           );
-          this.$store.commit('setFollowers', {
-            followers: res.user ? res.user.following ?? [] : [],
-            following: res.user ? res.user.followers ?? [] : []
+          this.$store.commit('setFollowersAndFollowing', {
+            followers: res.user ? res.user.followers ?? [] : [],
+            following: res.user ? res.user.following ?? [] : []
           });
         }
 

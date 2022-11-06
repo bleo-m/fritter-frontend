@@ -70,7 +70,8 @@ export default {
     CreateFreetForm,
     FollowingFreetsButton
   },
-  mounted() {}
+  mounted() {},
+  methods: {}
 };
 </script>
 

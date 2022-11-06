@@ -64,7 +64,6 @@ router.get('/following-only', [], async (req: Request, res: Response) => {
     req.session.userId
   );
   const response = allFreets.map(util.constructFreetResponse);
-  console.log(response);
   res.status(200).json(response);
 });
 

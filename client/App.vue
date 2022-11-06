@@ -22,9 +22,9 @@ export default {
       .then((res) => {
         const user = res.user;
         this.$store.commit('setUsername', user ? user.username : null);
-        this.$store.commit('setFollowers', {
-          followers: res.user.following ?? [],
-          following: res.user.followers ?? []
+        this.$store.commit('setFollowersAndFollowing', {
+          followers: res.user.followers ?? [],
+          following: res.user.following ?? []
         });
       });
 
