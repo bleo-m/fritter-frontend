@@ -16,6 +16,11 @@
       <div v-else>
         <FollowUserButton :author="freet.author" />
       </div>
+      <ReactionRow
+        :reactions="reactions[freet._id] ?? undefined"
+        :freet-id="freet._id"
+        :signed-in="$store.state.username !== null"
+      />
     </header>
     <textarea
       v-if="editing"
@@ -44,14 +49,21 @@
 
 <script>
 import FollowUserButton from '@/components/User/FollowUserButton.vue';
+import ReactionRow from '@/components/Reactions/ReactionRow.vue';
+
 export default {
   name: 'FreetComponent',
   components: {
-    FollowUserButton
+    FollowUserButton,
+    ReactionRow
   },
   props: {
     // Data from the stored freet
     freet: {
+      type: Object,
+      required: true
+    },
+    reactions: {
       type: Object,
       required: true
     }

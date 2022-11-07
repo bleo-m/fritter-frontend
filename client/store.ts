@@ -12,6 +12,7 @@ const store = new Vuex.Store({
     filter: null, // Username to filter shown freets by (null = show all)
     followOnly: false, // If only freets from the user's following list show up on the timeline
     freets: [], // All freets created in the app
+    reactions: Object.create(null), // All reactions created in the app
     username: null, // Username of the logged in user
     followers: [], // Users that follow the logged in user
     following: [], // Users that the logged in user is following
@@ -69,6 +70,38 @@ const store = new Vuex.Store({
        * @param freets - Freets to store
        */
       state.freets = freets;
+    },
+    setReactions(state, reactions) {
+      /**
+       * Set the stored reactions to the provided reactions.
+       * @param reactions - Reactions to store
+       */
+      const newReactions = Object.create(null);
+      // Group reactions by their corresponding freet Ids
+      for (const reaction of reactions) {
+        const freetId = `${reaction.freetId}`;
+        if (freetId in newReactions) {
+          newReactions[freetId].push(reaction);
+        } else {
+          newReactions[freetId] = [reaction];
+        }
+      }
+      state.reactions = newReactions;
+    },
+
+    updateReactions(state, reaction) {
+      /**
+       * Set the stored reactions to the provided reactions.
+       * @param reactions - Reactions to store
+       */
+      const newReactions = JSON.parse(JSON.stringify(state.reactions)); // Copy to ensure no alliasing occurs;
+      const freetId = reaction.freetId;
+      if (freetId in newReactions) {
+        newReactions[freetId].push(reaction);
+      } else {
+        newReactions[freetId] = new Array(reaction);
+      }
+      state.reactions = newReactions;
     },
     async refreshFreets(state) {
       /**

@@ -46,6 +46,7 @@
           v-for="freet in $store.state.freets"
           :key="freet.id"
           :freet="freet"
+          :reactions="$store.state.reactions"
         />
       </section>
       <article v-else>
@@ -70,8 +71,12 @@ export default {
     CreateFreetForm,
     FollowingFreetsButton
   },
-  mounted() {},
-  methods: {}
+  mounted() {
+    // this.logStuff();
+  },
+  methods: {
+    logStuff() {}
+  }
 };
 </script>
 

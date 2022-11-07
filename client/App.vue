@@ -28,6 +28,17 @@ export default {
         });
       });
 
+    this.$store.commit('refreshFreets');
+
+    fetch('/api/reactions/', {
+      credentials: 'same-origin' // Sends express-session credentials with request
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        const reactions = res;
+        this.$store.commit('setReactions', reactions);
+      });
+
     // Clear alerts on page refresh
     this.$store.state.alerts = {};
   }
