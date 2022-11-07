@@ -175,7 +175,6 @@ export default {
   flex-direction: row;
   justify-content: flex-start;
   margin: 16px 0;
-  gap: 4px;
 }
 
 .current-reaction {
@@ -185,6 +184,9 @@ export default {
   border-radius: 4px;
 }
 button {
-  margin: 0 0px;
+  font-size: large;
+  height: 32px;
+  width: 64px;
+  margin: 0 4px 0 0;
 }
 </style>

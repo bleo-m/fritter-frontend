@@ -30,7 +30,7 @@
 <style scoped>
 nav {
   padding: 1vw 2vw;
-  background-color: rgb(247, 216, 130);
+  background-color: rgb(235, 207, 130);
   display: flex;
   justify-content: space-between;
   align-items: center;
