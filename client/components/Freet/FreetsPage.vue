@@ -1,7 +1,7 @@
 <!-- Default page that also displays freets -->
 
 <template>
-  <main>
+  <main class="viewport">
     <section v-if="$store.state.username">
       <header>
         <h2>Welcome @{{ $store.state.username }}</h2>
@@ -101,5 +101,10 @@ section .scrollbox {
   flex: 1 0 50vh;
   padding: 3%;
   overflow-y: scroll;
+}
+
+.viewport {
+  margin: auto;
+  width: 75%;
 }
 </style>

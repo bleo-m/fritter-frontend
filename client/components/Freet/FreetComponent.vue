@@ -4,58 +4,67 @@
 <!-- We've tagged some elements with classes; consider writing CSS using those classes to style them... -->
 
 <template>
-  <article class="freet">
-    <header>
-      <h3 class="author">@{{ freet.author }}</h3>
-      <div v-if="$store.state.username === freet.author" class="actions">
-        <button v-if="editing" @click="submitEdit">✅ Save changes</button>
-        <button v-if="editing" @click="stopEditing">🚫 Discard changes</button>
-        <button v-if="!editing" @click="startEditing">✏️ Edit</button>
-        <button @click="deleteFreet">🗑️ Delete</button>
-      </div>
-      <div v-else>
-        <FollowUserButton :author="freet.author" />
-      </div>
-      <ReactionRow
-        :reactions="reactions[freet._id] ?? undefined"
-        :freet-id="freet._id"
-        :signed-in="$store.state.username !== null"
+  <div class="freet-container">
+    <article class="freet-content">
+      <header>
+        <h3 class="author">@{{ freet.author }}</h3>
+        <div v-if="$store.state.username === freet.author" class="actions">
+          <button v-if="editing" @click="submitEdit">✅ Save changes</button>
+          <button v-if="editing" @click="stopEditing">
+            🚫 Discard changes
+          </button>
+          <button v-if="!editing" @click="startEditing">✏️ Edit</button>
+          <button @click="deleteFreet">🗑️ Delete</button>
+        </div>
+        <div v-else>
+          <FollowUserButton :author="freet.author" />
+        </div>
+        <ReactionRow
+          :reactions="reactions[freet._id] ?? undefined"
+          :freet-id="freet._id"
+          :signed-in="$store.state.username !== null"
+        />
+      </header>
+      <textarea
+        v-if="editing"
+        class="content"
+        :value="draft"
+        @input="draft = $event.target.value"
       />
-    </header>
-    <textarea
-      v-if="editing"
-      class="content"
-      :value="draft"
-      @input="draft = $event.target.value"
-    />
-    <p v-else class="content">
-      {{ freet.content }}
-    </p>
-    <p class="info">
-      Posted at {{ freet.dateModified }}
-      <i v-if="freet.edited">(edited)</i>
-    </p>
-    <section class="alerts">
-      <article
-        v-for="(status, alert, index) in alerts"
-        :key="index"
-        :class="status"
-      >
-        <p>{{ alert }}</p>
-      </article>
-    </section>
-  </article>
+      <p v-else class="content">
+        {{ freet.content }}
+      </p>
+      <p class="info">
+        Posted at {{ freet.dateModified }}
+        <i v-if="freet.edited">(edited)</i>
+      </p>
+      <section class="alerts">
+        <article
+          v-for="(status, alert, index) in alerts"
+          :key="index"
+          :class="status"
+        >
+          <p>{{ alert }}</p>
+        </article>
+      </section>
+    </article>
+    <article class="options">
+      <OptionsMenu />
+    </article>
+  </div>
 </template>
 
 <script>
 import FollowUserButton from '@/components/User/FollowUserButton.vue';
 import ReactionRow from '@/components/Reactions/ReactionRow.vue';
+import OptionsMenu from '@/components/Freet/OptionsMenu.vue';
 
 export default {
   name: 'FreetComponent',
   components: {
     FollowUserButton,
-    ReactionRow
+    ReactionRow,
+    OptionsMenu
   },
   props: {
     // Data from the stored freet
@@ -164,9 +173,21 @@ export default {
 </script>
 
 <style scoped>
-.freet {
-  border: 1px solid #111;
+.freet-content {
+}
+
+.options {
   padding: 20px;
+}
+
+.freet-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border: 1px solid #111;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 8px 0;
   position: relative;
 }
 </style>

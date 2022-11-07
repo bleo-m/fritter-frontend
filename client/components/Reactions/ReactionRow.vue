@@ -179,8 +179,8 @@ export default {
 }
 
 .current-reaction {
-  background-color: rgb(178 225 255 / 39%);
-  border-color: #139ef4;
+  background-color: rgba(255, 225, 143, 0.298);
+  border-color: rgb(249, 197, 54);
   border-style: solid;
   border-radius: 4px;
 }
