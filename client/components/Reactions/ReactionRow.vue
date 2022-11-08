@@ -180,13 +180,20 @@ export default {
 .current-reaction {
   background-color: rgba(255, 225, 143, 0.298);
   border-color: rgb(249, 197, 54);
-  border-style: solid;
-  border-radius: 4px;
 }
 button {
   font-size: large;
   height: 32px;
   width: 64px;
   margin: 0 4px 0 0;
+  background-color: rgb(248, 248, 248);
+  border-color: rgb(211, 211, 211);
+  border-style: solid;
+  border-radius: 4px;
+}
+button:hover {
+  background-color: rgb(255, 253, 238);
+  border-color: rgb(242, 224, 177);
+  cursor: pointer;
 }
 </style>

@@ -5,39 +5,37 @@
 
 <template>
   <div class="freet-container">
-    <article class="freet-content">
-      <header>
+    <article>
+      <header class="freet-info">
         <h3 class="author">@{{ freet.author }}</h3>
-        <div v-if="$store.state.username === freet.author" class="actions">
-          <button v-if="editing" @click="submitEdit">✅ Save changes</button>
-          <button v-if="editing" @click="stopEditing">
-            🚫 Discard changes
-          </button>
-          <button v-if="!editing" @click="startEditing">✏️ Edit</button>
-          <button @click="deleteFreet">🗑️ Delete</button>
-        </div>
-        <div v-else>
-          <FollowUserButton :author="freet.author" />
-        </div>
-        <ReactionRow
-          :reactions="reactions[freet._id] ?? undefined"
-          :freet-id="freet._id"
-          :signed-in="$store.state.username !== null"
-        />
+        <p class="time-info">
+          Posted on {{ freet.dateModified }}
+          <i v-if="freet.edited">(edited)</i>
+        </p>
       </header>
+      <div v-if="$store.state.username === freet.author" class="actions">
+        <button v-if="editing" @click="submitEdit">✅ Save changes</button>
+        <button v-if="editing" @click="stopEditing">🚫 Discard changes</button>
+        <button v-if="!editing" @click="startEditing">✏️ Edit</button>
+        <button @click="deleteFreet">🗑️ Delete</button>
+      </div>
+      <div v-else>
+        <FollowUserButton :author="freet.author" />
+      </div>
       <textarea
         v-if="editing"
         class="content"
         :value="draft"
         @input="draft = $event.target.value"
       />
-      <p v-else class="content">
+      <p v-else class="freet-content">
         {{ freet.content }}
       </p>
-      <p class="info">
-        Posted at {{ freet.dateModified }}
-        <i v-if="freet.edited">(edited)</i>
-      </p>
+      <ReactionRow
+        :reactions="reactions[freet._id] ?? undefined"
+        :freet-id="freet._id"
+        :signed-in="$store.state.username !== null"
+      />
       <section class="alerts">
         <article
           v-for="(status, alert, index) in alerts"
@@ -176,6 +174,17 @@ export default {
 .freet-content {
 }
 
+.freet-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
+
+.time-info {
+  font-size: medium;
+}
+
 .options {
   padding: 20px;
 }
@@ -184,9 +193,9 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  border: 1px solid #111;
-  border-radius: 8px;
-  padding: 20px;
+  border: 1px solid rgb(82, 82, 82);
+  border-radius: 4px;
+  padding: 2px 16px;
   margin: 8px 0;
   position: relative;
 }

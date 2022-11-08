@@ -105,6 +105,6 @@ section .scrollbox {
 
 .viewport {
   margin: auto;
-  width: 75%;
+  width: 50%;
 }
 </style>
