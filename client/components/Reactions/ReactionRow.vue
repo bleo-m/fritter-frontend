@@ -19,10 +19,10 @@
         class="current-reaction"
         @click="removeReaction('sad')"
       >
-        😢 {{ emotions.sad }}
+        😭 {{ emotions.sad }}
       </button>
       <button v-else @click="submitReaction('sad')">
-        😢 {{ emotions.sad }}
+        😭 {{ emotions.sad }}
       </button>
 
       <button
