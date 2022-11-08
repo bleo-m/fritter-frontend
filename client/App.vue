@@ -22,13 +22,29 @@ export default {
       .then((res) => {
         const user = res.user;
         this.$store.commit('setUsername', user ? user.username : null);
-        this.$store.commit('setFollowersAndFollowing', {
-          followers: res.user.followers ?? [],
-          following: res.user.following ?? []
-        });
+        if (user) {
+          this.$store.commit('setFollowersAndFollowing', {
+            followers: user.followers ?? [],
+            following: user.following ?? []
+          });
+        } else {
+          this.$store.commit('setFollowersAndFollowing', {
+            followers: [],
+            following: []
+          });
+        }
       });
 
     this.$store.commit('refreshFreets');
+
+    fetch('/api/controversy-warnings/', {
+      credentials: 'same-origin' // Sends express-session credentials with request
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        const controversyWarnings = res;
+        this.$store.commit('setControversyWarnings', controversyWarnings);
+      });
 
     fetch('/api/reactions/', {
       credentials: 'same-origin' // Sends express-session credentials with request

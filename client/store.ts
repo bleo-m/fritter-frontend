@@ -13,6 +13,7 @@ const store = new Vuex.Store({
     followOnly: false, // If only freets from the user's following list show up on the timeline
     freets: [], // All freets created in the app
     reactions: Object.create(null), // All reactions created in the app
+    controversyWarnings: Object.create(null), // All controversyWarnings created in the app
     username: null, // Username of the logged in user
     followers: [], // Users that follow the logged in user
     following: [], // Users that the logged in user is following
@@ -71,6 +72,23 @@ const store = new Vuex.Store({
        */
       state.freets = freets;
     },
+
+    setControversyWarnings(state, controversyWarnings) {
+      /**
+       * Set the stored controversyWarnings to the provided controversyWarnings.
+       * @param controversyWarnings - controversyWarnings to store
+       */
+      const newControversyWarnings = Object.create(null);
+      // Group controversyWarnings by their corresponding freet Ids
+      for (const warning of controversyWarnings) {
+        const freetId = `${warning.freetId}`;
+        if (!(freetId in newControversyWarnings)) {
+          newControversyWarnings[freetId] = warning;
+        }
+      }
+      state.controversyWarnings = newControversyWarnings;
+    },
+
     setReactions(state, reactions) {
       /**
        * Set the stored reactions to the provided reactions.
@@ -143,15 +161,40 @@ const store = new Vuex.Store({
       state.reactions = newReactions;
     },
 
+    updateControversyWarning(state, controversyWarning) {
+      /**
+       * Set the provided controversyWarning to the stored controversyWarnings.
+       * @param controversyWarning - controversyWarning to store
+       */
+
+      // Copy to prevent alliasing errors
+      const newControversyWarnings = JSON.parse(
+        JSON.stringify(state.controversyWarnings)
+      );
+
+      const freetId = controversyWarning.freetId;
+      if (freetId in newControversyWarnings) {
+        newControversyWarnings[freetId] = controversyWarning;
+      }
+      state.controversyWarnings = newControversyWarnings;
+    },
+
     async refreshFreets(state) {
       /**
        * Request the server for the currently available freets.
+       * At the same time, request for updated controversy warnings for those freets.
        */
-      const url = state.filter
+      const freetsUrl = state.filter
         ? `/api/users/${state.filter}/freets`
         : '/api/freets';
-      const res = await fetch(url).then(async (r) => r.json());
-      state.freets = res;
+
+      const controversyUrl = 'api/controversy-warnings';
+      const freetsRes = await fetch(freetsUrl).then(async (r) => r.json());
+      const controversyRes = await fetch(controversyUrl).then(async (r) =>
+        r.json()
+      );
+      state.freets = freetsRes;
+      this.commit('setControversyWarnings', controversyRes);
     }
   },
   // Store data across page refreshes, only discard on browser close

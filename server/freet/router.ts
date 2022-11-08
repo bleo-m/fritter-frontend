@@ -1,7 +1,9 @@
 import type {NextFunction, Request, Response} from 'express';
 import express from 'express';
 import FreetCollection from './collection';
-import UserCollection from '../user/collection';
+import ReactionCollection from '../reaction/collection';
+import CommentCollection from '../comment/collection';
+import ControversyWarningCollection from '../controversy_warning/collection';
 import * as userValidator from '../user/middleware';
 import * as freetValidator from '../freet/middleware';
 import * as util from './util';
@@ -85,6 +87,9 @@ router.post(
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
     const freet = await FreetCollection.addOne(userId, req.body.content);
 
+    // Every freet needs a corresponding controversy warning
+    await ControversyWarningCollection.addOne(freet._id, 0, [], false);
+
     res.status(201).json({
       message: 'Your freet was created successfully.',
       freet: util.constructFreetResponse(freet)
@@ -110,6 +115,9 @@ router.delete(
     freetValidator.isValidFreetModifier
   ],
   async (req: Request, res: Response) => {
+    await CommentCollection.deleteManyByFreetId(req.params.freetId);
+    await ReactionCollection.deleteManyByFreetId(req.params.freetId);
+    await ControversyWarningCollection.deleteOneByFreetId(req.params.freetId);
     await FreetCollection.deleteOne(req.params.freetId);
     res.status(200).json({
       message: 'Your freet was deleted successfully.'

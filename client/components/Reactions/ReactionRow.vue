@@ -60,7 +60,7 @@
     </div>
     <div v-else>
       <button>🤩 {{ emotions.happy }}</button>
-      <button>😢 {{ emotions.sad }}</button>
+      <button>😭 {{ emotions.sad }}</button>
       <button>😡 {{ emotions.angry }}</button>
       <button>🤔 {{ emotions.confused }}</button>
       <button>😱 {{ emotions.shocked }}</button>

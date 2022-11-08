@@ -3,8 +3,17 @@
 <template>
   <div>
     <div v-if="isOpen" class="optionsMenu">
-      <button>Report As Controversial</button>
+      <button @click="submitControversy">Report As Controversial</button>
       <button @click="closeMenu">Close Menu</button>
+      <section class="alerts">
+        <article
+          v-for="(status, alert, index) in alerts"
+          :key="index"
+          :class="status"
+        >
+          <p>{{ alert }}</p>
+        </article>
+      </section>
     </div>
     <button @click="openMenu">...</button>
   </div>
@@ -13,16 +22,43 @@
 <script>
 export default {
   name: 'OptionsButton',
+  props: {
+    freetId: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
-      isOpen: false
+      isOpen: false,
+      alerts: {}
     };
   },
   methods: {
     /**
      * Update the displayed freets to either be only freets from users you are following or from all the users on Fritter
      */
-    async submit() {},
+    async submitControversy() {
+      const url = `/api/controversy-warnings/${this.freetId}/`;
+      const options = {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'same-origin' // Sends express-session credentials with request
+      };
+
+      try {
+        const r = await fetch(url, options);
+        const res = await r.json();
+        if (!r.ok) {
+          throw new Error(res.error);
+        }
+        this.$store.commit('updateControversyWarning', res.controversyWarning);
+        this.closeMenu();
+      } catch (e) {
+        this.$set(this.alerts, e, 'error');
+        setTimeout(() => this.$delete(this.alerts, e), 3000);
+      }
+    },
 
     openMenu() {
       this.isOpen = true;

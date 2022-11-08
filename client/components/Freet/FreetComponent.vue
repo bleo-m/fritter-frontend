@@ -13,29 +13,42 @@
           <i v-if="freet.edited">(edited)</i>
         </p>
       </header>
-      <div v-if="$store.state.username === freet.author" class="actions">
-        <button v-if="editing" @click="submitEdit">✅ Save changes</button>
-        <button v-if="editing" @click="stopEditing">🚫 Discard changes</button>
-        <button v-if="!editing" @click="startEditing">✏️ Edit</button>
-        <button @click="deleteFreet">🗑️ Delete</button>
+      <div>
+        <div
+          v-if="isControversial && hideControversy"
+          class="freet-controversial"
+        >
+          This Freet's content has been flagged as controversial
+          <button @click="disableHideControversy">View anyways</button>
+        </div>
+        <div v-else>
+          <div v-if="$store.state.username === freet.author" class="actions">
+            <button v-if="editing" @click="submitEdit">✅ Save changes</button>
+            <button v-if="editing" @click="stopEditing">
+              🚫 Discard changes
+            </button>
+            <button v-if="!editing" @click="startEditing">✏️ Edit</button>
+            <button @click="deleteFreet">🗑️ Delete</button>
+          </div>
+          <div v-else>
+            <FollowUserButton :author="freet.author" />
+          </div>
+          <textarea
+            v-if="editing"
+            class="content"
+            :value="draft"
+            @input="draft = $event.target.value"
+          />
+          <p v-else class="freet-content">
+            {{ freet.content }}
+          </p>
+          <ReactionRow
+            :reactions="reactions[freet._id] ?? undefined"
+            :freet-id="freet._id"
+            :signed-in="$store.state.username !== null"
+          />
+        </div>
       </div>
-      <div v-else>
-        <FollowUserButton :author="freet.author" />
-      </div>
-      <textarea
-        v-if="editing"
-        class="content"
-        :value="draft"
-        @input="draft = $event.target.value"
-      />
-      <p v-else class="freet-content">
-        {{ freet.content }}
-      </p>
-      <ReactionRow
-        :reactions="reactions[freet._id] ?? undefined"
-        :freet-id="freet._id"
-        :signed-in="$store.state.username !== null"
-      />
       <section class="alerts">
         <article
           v-for="(status, alert, index) in alerts"
@@ -47,7 +60,7 @@
       </section>
     </article>
     <article class="options">
-      <OptionsMenu />
+      <OptionsMenu :freet-id="freet._id" />
     </article>
   </div>
 </template>
@@ -79,8 +92,16 @@ export default {
     return {
       editing: false, // Whether or not this freet is in edit mode
       draft: this.freet.content, // Potentially-new content for this freet
-      alerts: {} // Displays success/error messages encountered during freet modification
+      alerts: {}, // Displays success/error messages encountered during freet modification
+      hideControversy: true
     };
+  },
+  computed: {
+    isControversial() {
+      const controversyWarning =
+        this.$store.state.controversyWarnings[this.freet._id] ?? undefined;
+      return controversyWarning ? controversyWarning.active : false;
+    }
   },
   methods: {
     startEditing() {
@@ -111,6 +132,9 @@ export default {
         }
       };
       this.request(params);
+    },
+    disableHideControversy() {
+      this.hideControversy = false;
     },
     submitEdit() {
       /**
@@ -174,6 +198,13 @@ export default {
 .freet-content {
 }
 
+.freet-controversial {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 0 12px 0;
+  gap: 8px;
+}
 .freet-info {
   display: flex;
   flex-direction: row;
