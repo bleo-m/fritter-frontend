@@ -21,20 +21,14 @@
     </section>
     <section>
       <header>
-        <div class="left">
+        <div class="freet-page-header">
           <h2>
             Viewing all freets
             <span v-if="$store.state.filter">
               by @{{ $store.state.filter }}
             </span>
           </h2>
-          <div class="right">
-            <!-- <GetFreetsForm
-            ref="getFreetsForm"
-            value="author"
-            placeholder="🔍 Filter by author (optional)"
-            button="🔄 Get freets"
-          /> -->
+          <div>
             <div v-if="$store.state.username">
               <FollowingFreetsButton ref="followingFreetsButton" />
             </div>
@@ -107,5 +101,9 @@ section .scrollbox {
 .viewport {
   margin: auto;
   width: 50%;
+}
+
+.freet-page-header {
+  width: 100%;
 }
 </style>

@@ -88,6 +88,16 @@ export default {
 </script>
 <style scoped>
 button {
-  margin: 0 0px;
+  padding: 4px 16px;
+  background-color: rgb(248, 248, 248);
+  border-color: rgb(211, 211, 211);
+  border-style: solid;
+  border-radius: 4px;
+  margin: 0;
+}
+button:hover {
+  background-color: rgb(255, 253, 238);
+  border-color: rgb(242, 224, 177);
+  cursor: pointer;
 }
 </style>
