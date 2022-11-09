@@ -12,6 +12,7 @@ const store = new Vuex.Store({
     filter: null, // Username to filter shown freets by (null = show all)
     followOnly: false, // If only freets from the user's following list show up on the timeline
     freets: [], // All freets created in the app
+    comments: [], // All comments for a given freet
     reactions: Object.create(null), // All reactions created in the app
     controversyWarnings: Object.create(null), // All controversyWarnings created in the app
     username: null, // Username of the logged in user
@@ -35,6 +36,26 @@ const store = new Vuex.Store({
        * @param username - new username to set
        */
       state.username = username;
+    },
+    async setComments(state, freetId) {
+      /**
+       * Update the stored comments to the specified ones.
+       * @param freetId - freetId associated with the comments we want to get
+       */
+      fetch(`/api/comments?freetId=${freetId}`, {
+        credentials: 'same-origin' // Sends express-session credentials with request
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          const comments = res;
+          state.comments = comments;
+        });
+    },
+    clearComments(state) {
+      /**
+       *  Remove all comments stored in Vuex
+       */
+      state.comments = [];
     },
     setFollowersAndFollowing(state, {followers, following}) {
       /**

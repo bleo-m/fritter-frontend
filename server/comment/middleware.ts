@@ -37,6 +37,13 @@ const isValidCommentContent = (
   res: Response,
   next: NextFunction
 ) => {
+  if (req.body.content === undefined) {
+    res.status(400).json({
+      error: 'Comment content is undefined'
+    });
+    return;
+  }
+
   const {content} = req.body as {content: string};
   if (!content.trim()) {
     res.status(400).json({

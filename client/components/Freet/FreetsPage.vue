@@ -72,6 +72,7 @@ export default {
     FollowingFreetsButton
   },
   mounted() {
+    this.$store.commit('clearComments');
     // this.logStuff();
   },
   methods: {

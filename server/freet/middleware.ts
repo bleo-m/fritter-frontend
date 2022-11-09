@@ -102,7 +102,17 @@ const isFreetExistsInQuery = async (
   next: NextFunction
 ) => {
   const {freetId} = req.query;
-  const freet = await FreetCollection.findOne(freetId as string);
+
+  if (typeof freetId !== 'string') {
+    res.status(400).json({
+      error: {
+        freetNotFound: `Freet ID ${req.params.freetId} is not valid.`
+      }
+    });
+    return;
+  }
+
+  const freet = await FreetCollection.findOne(freetId);
   if (!freet) {
     res.status(404).json({
       error: {

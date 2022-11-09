@@ -42,11 +42,16 @@
           <p v-else class="freet-content">
             {{ freet.content }}
           </p>
-          <ReactionRow
-            :reactions="reactions[freet._id] ?? undefined"
-            :freet-id="freet._id"
-            :signed-in="$store.state.username !== null"
-          />
+          <section class="freet-footer">
+            <ReactionRow
+              :reactions="reactions[freet._id] ?? undefined"
+              :freet-id="freet._id"
+              :signed-in="$store.state.username !== null"
+            />
+            <router-link :to="{name: 'Comments', params: {freetId: freet._id}}">
+              Comments
+            </router-link>
+          </section>
         </div>
       </div>
       <section class="alerts">
@@ -224,10 +229,39 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  border: 1px solid rgb(82, 82, 82);
-  border-radius: 4px;
+  border: 2px solid rgb(212, 212, 212);
+  border-radius: 6px;
   padding: 2px 16px;
   margin: 8px 0;
   position: relative;
+}
+
+.freet-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5vw;
+}
+.freet-container button,
+a {
+  font-size: large;
+  height: 32px;
+  margin: 0 4px 0 0;
+  background-color: rgb(248, 248, 248);
+  border-color: rgb(211, 211, 211);
+  border-style: solid;
+  border-radius: 4px;
+  text-decoration: none;
+  color: black;
+  text-align: center;
+  padding: 2px 10px;
+}
+
+.freet-container button:hover,
+a:hover {
+  background-color: rgb(255, 253, 238);
+  border-color: rgb(242, 224, 177);
+  cursor: pointer;
 }
 </style>

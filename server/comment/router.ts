@@ -65,13 +65,13 @@ router.get(
  */
 router.post(
   '/:freetId',
-  [freetValidator.isFreetExistsInParam],
+  [commentValidator.isValidCommentContent, freetValidator.isFreetExistsInParam],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
     const comment = await CommentCollection.addOne(
       userId,
       req.params.freetId,
-      req.body.content
+      req.body.content ?? 'empty comment'
     );
 
     res.status(201).json({
